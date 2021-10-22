@@ -1,0 +1,45 @@
+html, body{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+main{
+    min-height: 700px;
+    min-width: 400px;
+    height: 700px;
+    width: 400px;
+    display: grid;
+    grid-template: repeat(7, 1fr)/ repeat(8, 1fr);
+
+}
+
+[data-previous]{
+    grid-column: span 8;
+}
+
+[data-current]{
+    grid-column: span 8;
+}
+
+[data-clear]{
+    grid-column: span 3;
+}
+
+[data-delete]{
+    grid-column: span 3;
+}
+
+[data-operation]{
+    grid-column: span 2;
+}
+
+[data-number]{
+    grid-column: span 2;
+}
+
+[data-equal]{
+    grid-column: span 4;
+}
