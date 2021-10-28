@@ -1,19 +1,47 @@
+*, *::before, *::after{
+    box-sizing: border-box;
+    font-family: Gotham Rounded, sans-serif;
+    font-weight: normal;
+}
+
+
+
 html, body{
     display: flex;
     width: 100vw;
     height: 100vh;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(to top right, rgb(209, 102, 102), rgb(171, 250, 169));
+    padding: 0;
+    margin: 0;
 }
 
 main{
-    min-height: 700px;
-    min-width: 400px;
-    height: 700px;
+    min-height: 400px;
+    min-width: 200px;
+    height: 80vh;
     width: 400px;
     display: grid;
     grid-template: repeat(7, 1fr)/ repeat(8, 1fr);
+    background-color: rgba(29, 120, 116);
+}
 
+div{
+    display: flex;
+    justify-content: right;
+    padding: 20px;
+    font-size: 25px;
+    background-color: rgba(209, 102, 102, 0.5);
+}
+
+button{
+    background-color: gray;
+    border-radius: 10%;
+    margin: 5px;
+    border-style: none;
+    background-color: rgba(130, 209, 115);
+    font-size: 30px;
 }
 
 [data-previous]{
@@ -34,6 +62,7 @@ main{
 
 [data-operation]{
     grid-column: span 2;
+    background-color: rgba(209, 102, 102);
 }
 
 [data-number]{
@@ -42,4 +71,5 @@ main{
 
 [data-equal]{
     grid-column: span 4;
+    background-color: rgba(204, 41, 54);
 }

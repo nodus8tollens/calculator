@@ -1,95 +1,4 @@
-/* JS solution by Web Dev Simplified:
-https://www.youtube.com/watch?v=j59qQ7YWLxw
- */
-
-
-class Calculator {
-    constructor(previousOperandTextElement, currentOperandTextElement) {
-        this.previousOperandTextElement = previousOperandTextElement;
-        this.currentOperandTextElement = currentOperandTextElement;
-        this.clear();
-    }
-
-    clear(){
-        this.currentOperand = '';
-        this.previousOperand = '';
-        this.operation = undefined;
-    }
-
-    delete(){
-        this.currentOperand = this.currentOperand.toString().slice(0, -1);
-    }
-
-    appendNumber(number){
-        if(number === '.' && this.currentOperand.includes('.')) return;
-        this.currentOperand = this.currentOperand.toString() + number.toString();
-    }
-
-    chooseOperation(operation){
-        if(this.currentOperand === '') return;
-        if(this.previousOperand !== '') this.compute();
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
-        this.currentOperand = '';
-    }
-
-    compute(){
-        let computation;
-        const previous = parseFloat(this.previousOperand);
-        const current = parseFloat(this.currentOperand);
-        if(isNaN(previous) || isNaN(current)) return;
-        switch(this.operation){
-            case '+':
-                computation = previous + current;
-                break;
-            case '-':
-                computation = previous - current;
-                break;
-            case '*':
-                computation = previous * current;
-                break;
-            case '/':
-                computation = previous / current;
-                break;
-            default:
-                return;
-        }
-        this.currentOperand = computation;
-        this.operation = undefined;
-        this.previousOperand = '';
-    }
-
-    getDisplayNumber(number){
-        const stringNumber = number.toString();
-        const integerDigits = parseFloat(stringNumber.split('.')[0]);
-        const decimalDigits = stringNumber.split('.')[1];
-        let integerDisplay;
-        if(isNaN(integerDigits)){
-            integerDisplay = '';
-        }
-        else{
-            integerDisplay = integerDigits.toLocaleString('en', {maximumFractionDigits: 0});
-        }
-        if(decimalDigits != null){
-            return `${integerDisplay}.${decimalDigits}`;
-        }
-        else{
-            return integerDisplay;
-        }
-    }
-
-    updateDisplay(){
-        this.currentOperandTextElement.innerText =
-            this.getDisplayNumber(this.currentOperand);
-        if(this.operation != null){
-            this.previousOperandTextElement.innerText =
-                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
-        }
-        else{
-            this.previousOperandTextElement.innerText = '';
-        }
-    }
-}
+//My solution
 
 const previousOperandTextElement = document.querySelector('[data-previous]');
 const currentOperandTextElement = document.querySelector('[data-current]');
@@ -99,33 +8,76 @@ const operationButtons = document.querySelectorAll('[data-operation]');
 const numberButtons = document.querySelectorAll('[data-number]');
 const equalButton = document.querySelector('[data-equal]');
 
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement);
+function compute(a, operator, b){
+    switch(operator){
+        case '+':
+            return (a + b);
+            break;
+        case '-':
+            return (a - b);
+            break;
+        case '*':
+            return (a * b);
+            break;
+        case '/':
+            return (a / b);
+            break;
+        default:
+            return;
+    }
+}
+
+let currentOperand, previousOperand, operator = undefined;
+
+clearButton.addEventListener('click', () => {
+    previousOperandTextElement.innerText = '';
+    currentOperandTextElement.innerText = '';
+    previousOperand = null;
+    currentOperand = null;
+    operator = null;
+})
+
+deleteButton.addEventListener('click', () => {
+    currentOperandTextElement.innerText = currentOperandTextElement.innerText.slice(0, -1);
+    if(currentOperandTextElement.innerText.length === 0) currentOperand = 0;
+    else currentOperand = parseFloat(currentOperandTextElement.innerText);
+})
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
-        calculator.appendNumber(button.innerText);
-        calculator.updateDisplay();
+        if(button.innerText === '.' && currentOperandTextElement.innerText.includes('.')) return;
+        currentOperandTextElement.innerText += button.innerText;
+        currentOperand = parseFloat(currentOperandTextElement.innerText);
     })
 })
 
 operationButtons.forEach(button => {
     button.addEventListener('click', () => {
-        calculator.chooseOperation(button.innerText);
-        calculator.updateDisplay();
+        if(typeof currentOperand !== 'number') return;
+        if(typeof previousOperand === 'number' && typeof operator === 'string' && typeof currentOperand === 'number'){
+            previousOperand = compute(previousOperand, operator, currentOperand);
+            operator = button.innerText;
+            previousOperandTextElement.innerText = previousOperand + operator;
+            currentOperandTextElement.innerText = null;
+            currentOperand = null;
+        }
+        else {
+            operator = button.innerText;
+            previousOperandTextElement.innerText = currentOperandTextElement.innerText + button.innerText;
+            previousOperand = currentOperand;
+            currentOperand = undefined;
+            currentOperandTextElement.innerText = '';
+        }
     })
 })
 
-equalButton.addEventListener('click', button => {
-    calculator.compute();
-    calculator.updateDisplay();
-})
-
-clearButton.addEventListener('click', button => {
-    calculator.clear();
-    calculator.updateDisplay();
-})
-
-deleteButton.addEventListener('click', button => {
-    calculator.delete();
-    calculator.updateDisplay();
+equalButton.addEventListener('click', () => {
+    if(typeof previousOperand !== 'number' || typeof operator !== 'string' || typeof currentOperand !== 'number') return;
+    else {
+        currentOperandTextElement.innerText = compute(previousOperand, operator, currentOperand);
+        currentOperand = compute(previousOperand, operator, currentOperand);
+        previousOperandTextElement.innerText = null;
+        previousOperand = null;
+        operator = null;
+    }
 })
